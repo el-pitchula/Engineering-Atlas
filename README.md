@@ -26,7 +26,7 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **Engineering Atlas** is an educational platform designed to introduce students to engineering through interactive technical illustrations, three-dimensional models, exploded views, and step-by-step explorations of engineered systems.
 
@@ -41,7 +41,7 @@ The goal is to combine **technical drawing, 3D visualization, and engineering ed
 
 ---
 
-## 🎯 Core Concept
+## Core Concept
 
 Each engineering discipline will be represented by a carefully selected project that users can explore interactively.
 
@@ -79,7 +79,7 @@ The interactions are intended to communicate engineering concepts visually, with
 
 ---
 
-## 🛰️ Initial Project: Satellite Anatomy
+## Initial Project: Satellite Anatomy
 
 The first planned experience focuses on an Earth-observation satellite as an introduction to aerospace engineering.
 
@@ -131,7 +131,7 @@ The first implementation will prioritize visual clarity and educational accuracy
 
 ---
 
-## 🏗️ Engineering Disciplines
+## Engineering Disciplines
 
 The long-term objective is to create a collection of interactive projects representing the engineering disciplines offered at FGA.
 
@@ -151,7 +151,7 @@ Each project will have a distinct interaction model while sharing the same under
 
 ---
 
-## 🧩 Planned Architecture
+## Planned Architecture
 
 The application is planned around three main layers:
 
@@ -226,7 +226,7 @@ Blender will be used to prepare the models and visual assets. Browser-side inter
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Phase 1 — Foundation
 
@@ -264,7 +264,7 @@ Blender will be used to prepare the models and visual assets. Browser-side inter
 
 ---
 
-## 💻 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -303,7 +303,7 @@ Open the local URL printed by Vite in your browser.
 
 ---
 
-## 📁 Planned Repository Structure
+## Planned Repository Structure
 
 The following structure describes the intended organization as the project develops. Directories will be added as needed.
 
@@ -337,7 +337,7 @@ The final structure will depend on the actual implementation and should not be c
 
 ---
 
-## ⚠️ Scope and Limitations
+## Scope and Limitations
 
 Engineering Atlas is intended as an educational visualization platform.
 
@@ -362,7 +362,7 @@ Technical descriptions will be developed using appropriate educational and engin
 
 ---
 
-## 📚 Educational Purpose
+## Educational Purpose
 
 The project is designed to support introductory engineering education by making complex systems easier to explore and understand.
 
@@ -379,7 +379,7 @@ The objective is not merely to show what engineers build, but to introduce how e
 
 ---
 
-## 🤝 Contributions
+## Contributions
 
 Suggestions, technical feedback, educational references, and ideas for future projects are welcome.
 
@@ -395,7 +395,7 @@ Contribution guidelines may be formalized as the project grows.
 
 ---
 
-## 📄 License
+## License
 
 No license has been selected yet.
 
