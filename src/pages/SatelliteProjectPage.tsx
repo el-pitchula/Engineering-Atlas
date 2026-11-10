@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import SatelliteViewer from '../components/3d/SatelliteViewer'
+import ProjectGallery from '../components/ProjectGallery'
 import './SatelliteProjectPage.css'
 
 const systems = [
@@ -92,7 +93,9 @@ export default function SatelliteProjectPage() {
 
         <section className="satellite-systems">
           <div className="satellite-section-heading">
-            <span className="satellite-section-label">ARQUITETURA DO SISTEMA</span>
+            <span className="satellite-section-label">
+              ARQUITETURA DO SISTEMA
+            </span>
             <h2>Conheça os subsistemas</h2>
             <p>
               Um satélite é formado por diferentes subsistemas que trabalham
@@ -116,6 +119,8 @@ export default function SatelliteProjectPage() {
             ))}
           </div>
         </section>
+
+        <ProjectGallery projectId="aerospace" />
 
         <footer className="satellite-footer">
           <Link to="/engineering/aerospace">

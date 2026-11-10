@@ -1,0 +1,93 @@
+
+.project-gallery {
+  padding: 70px 0;
+}
+
+.project-gallery-heading {
+  margin-bottom: 28px;
+}
+
+.project-gallery-label {
+  color: #c6f36a;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.project-gallery-heading h2 {
+  margin: 12px 0;
+  font-size: 26px;
+  letter-spacing: -0.035em;
+}
+
+.project-gallery-heading p {
+  max-width: 600px;
+  color: #929b91;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.project-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.project-gallery-card {
+  overflow: hidden;
+  border: 1px solid #303a32;
+  border-radius: 10px;
+  background: #171c19;
+}
+
+.project-gallery-image {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background:
+    linear-gradient(135deg, #1c2820, #101713);
+  border-bottom: 1px solid #303a32;
+}
+
+.project-gallery-image span {
+  color: #c6f36a;
+  font-family: 'DM Mono', monospace;
+  font-size: 34px;
+}
+
+.project-gallery-image small {
+  color: #929b91;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.project-gallery-info {
+  padding: 20px;
+}
+
+.project-gallery-info h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.project-gallery-info p {
+  color: #929b91;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.project-gallery-info small {
+  color: #c6f36a;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+}
+
+@media (max-width: 650px) {
+  .project-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
