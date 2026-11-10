@@ -79,9 +79,25 @@ function EngineeringPage() {
           <div>
             <h2>{area.project}</h2>
             <p>{area.projectDescription}</p>
-            <span className="project-status">
-              PROJETO EM DESENVOLVIMENTO
-            </span>
+
+            {area.id === 'aerospace' ? (
+              <>
+                <span className="project-status">
+                  PROJETO EM DESENVOLVIMENTO
+                </span>
+
+                <Link
+                  to="/engineering/aerospace/satellite"
+                  className="project-explore-link"
+                >
+                  EXPLORAR PROJETO →
+                </Link>
+              </>
+            ) : (
+              <span className="project-status">
+                PROJETO EM DESENVOLVIMENTO
+              </span>
+            )}
           </div>
 
           <div className="project-visual">

@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { engineeringAreas } from './data/engineeringAreas'
 import EngineeringPage from './pages/EngineeringPage'
+import SatelliteProjectPage from './pages/SatelliteProjectPage'
 import './App.css'
 
 function HomePage() {
@@ -139,6 +140,10 @@ function App() {
         <Route
           path="/engineering/:id"
           element={<EngineeringPage />}
+        />
+        <Route
+          path="/engineering/aerospace/satellite"
+          element={<SatelliteProjectPage />}
         />
       </Routes>
     </BrowserRouter>

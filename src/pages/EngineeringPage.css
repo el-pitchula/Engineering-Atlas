@@ -229,3 +229,17 @@
     flex-direction: column;
   }
 }
+
+.project-explore-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #c6f36a;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.project-explore-link:hover {
+  opacity: 0.7;
+}
