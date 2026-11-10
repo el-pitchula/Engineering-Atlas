@@ -93,15 +93,48 @@ const componentInfo: Record<
   },
 }
 
+const componentGroups = [
+  {
+    name: 'Estrutura',
+    items: [
+      { id: 'structure', name: 'Estrutura primária', number: '01' },
+    ],
+  },
+  {
+    name: 'Energia',
+    items: [
+      { id: 'solar-panels', name: 'Painéis solares', number: '02' },
+      { id: 'battery', name: 'Bateria', number: '04', internal: true },
+    ],
+  },
+  {
+    name: 'Comunicação',
+    items: [
+      { id: 'antenna', name: 'Antena', number: '03' },
+    ],
+  },
+  {
+    name: 'Controle e missão',
+    items: [
+      { id: 'computer', name: 'Computador de bordo', number: '05', internal: true },
+      { id: 'payload', name: 'Carga útil', number: '06', internal: true },
+    ],
+  },
+]
+
 export default function SatelliteViewer() {
   const [selectedComponent, setSelectedComponent] = useState('structure')
   const [exploded, setExploded] = useState(false)
 
   const selectedInfo = componentInfo[selectedComponent]
 
+  const selectComponent = (id: string) => {
+    setSelectedComponent(id)
+  }
+
   return (
     <div>
-      {/* Controles do visualizador */}
+      {/* Controles de visualização */}
       <div
         style={{
           display: 'flex',
@@ -158,63 +191,185 @@ export default function SatelliteViewer() {
         </div>
       </div>
 
-      {/* Modelo 3D */}
+      {/* Modelo e navegador de componentes */}
       <div
         style={{
-          width: '100%',
-          height: '520px',
-          background: '#101713',
-          borderRadius: '12px',
-          overflow: 'hidden',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) 250px',
+          gap: '14px',
+          alignItems: 'stretch',
         }}
       >
-        <Canvas
-          camera={{
-            position: [5, 4, 7],
-            fov: 45,
+        {/* Visualizador 3D */}
+        <div
+          style={{
+            minWidth: 0,
+            height: '520px',
+            background: '#101713',
+            borderRadius: '12px',
+            overflow: 'hidden',
           }}
-          shadows
         >
-          <color attach="background" args={['#101713']} />
+          <Canvas
+            camera={{
+              position: [5, 4, 7],
+              fov: 45,
+            }}
+            shadows
+          >
+            <color attach="background" args={['#101713']} />
 
-          <ambientLight intensity={1.1} />
+            <ambientLight intensity={1.1} />
 
-          <directionalLight
-            position={[5, 6, 5]}
-            intensity={2.2}
-            castShadow
-          />
-
-          <pointLight position={[-4, -2, -3]} intensity={1.2} />
-
-          <Suspense fallback={null}>
-            <SatelliteModel
-              onSelect={setSelectedComponent}
-              selectedComponent={selectedComponent}
-              exploded={exploded}
+            <directionalLight
+              position={[5, 6, 5]}
+              intensity={2.2}
+              castShadow
             />
 
-            <Stars
-              radius={80}
-              depth={40}
-              count={1500}
-              factor={3}
-              saturation={0}
-              fade
-            />
-          </Suspense>
+            <pointLight position={[-4, -2, -3]} intensity={1.2} />
 
-          <OrbitControls
-            enablePan
-            enableZoom
-            enableRotate
-            minDistance={3}
-            maxDistance={15}
-          />
-        </Canvas>
+            <Suspense fallback={null}>
+              <SatelliteModel
+                onSelect={selectComponent}
+                selectedComponent={selectedComponent}
+                exploded={exploded}
+              />
+
+              <Stars
+                radius={80}
+                depth={40}
+                count={1500}
+                factor={3}
+                saturation={0}
+                fade
+              />
+            </Suspense>
+
+            <OrbitControls
+              enablePan
+              enableZoom
+              enableRotate
+              minDistance={3}
+              maxDistance={15}
+            />
+          </Canvas>
+        </div>
+
+        {/* Navegador hierárquico */}
+        <aside
+          style={{
+            padding: '20px 15px',
+            background: '#171c19',
+            border: '1px solid #303a32',
+            borderRadius: '10px',
+          }}
+        >
+          <span
+            style={{
+              color: '#c6f36a',
+              fontFamily: 'DM Mono, monospace',
+              fontSize: '10px',
+              letterSpacing: '0.08em',
+            }}
+          >
+            ESTRUTURA DO SISTEMA
+          </span>
+
+          <h3
+            style={{
+              margin: '10px 0 20px',
+              color: '#edf1e9',
+              fontSize: '17px',
+            }}
+          >
+            Componentes
+          </h3>
+
+          {componentGroups.map((group) => (
+            <div key={group.name} style={{ marginBottom: '20px' }}>
+              <div
+                style={{
+                  marginBottom: '8px',
+                  color: '#929b91',
+                  fontFamily: 'DM Mono, monospace',
+                  fontSize: '10px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                }}
+              >
+                {group.name}
+              </div>
+
+              {group.items.map((item) => {
+                const active = selectedComponent === item.id
+                const disabled = item.internal && !exploded
+
+                return (
+                  <button
+                    key={item.id}
+                    disabled={disabled}
+                    onClick={() => selectComponent(item.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '9px',
+                      width: '100%',
+                      padding: '10px 8px',
+                      marginBottom: '4px',
+                      border: active
+                        ? '1px solid #829b4d'
+                        : '1px solid transparent',
+                      borderRadius: '5px',
+                      background: active ? '#26331e' : 'transparent',
+                      color: disabled
+                        ? '#515950'
+                        : active
+                          ? '#c6f36a'
+                          : '#b9c2b5',
+                      textAlign: 'left',
+                      fontSize: '11px',
+                      cursor: disabled ? 'not-allowed' : 'pointer',
+                      opacity: disabled ? 0.5 : 1,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: 'DM Mono, monospace',
+                        fontSize: '10px',
+                      }}
+                    >
+                      {item.number}
+                    </span>
+
+                    <span style={{ flex: 1 }}>{item.name}</span>
+
+                    {active && <span>●</span>}
+                    {disabled && <span>🔒</span>}
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+
+          <div
+            style={{
+              marginTop: '22px',
+              paddingTop: '14px',
+              borderTop: '1px solid #303a32',
+              color: '#929b91',
+              fontSize: '10px',
+              lineHeight: 1.7,
+            }}
+          >
+            {exploded
+              ? 'Todos os componentes estão disponíveis para exploração.'
+              : 'Ative a vista explodida para acessar os módulos internos.'}
+          </div>
+        </aside>
       </div>
 
-      {/* Legenda */}
+      {/* Legenda da vista explodida */}
       {exploded && (
         <div
           style={{
@@ -298,7 +453,7 @@ export default function SatelliteViewer() {
             fontSize: '10px',
           }}
         >
-          SELECIONE UM COMPONENTE NO MODELO 3D PARA EXPLORÁ-LO
+          SELECIONE UM COMPONENTE NO MODELO OU NA LISTA PARA EXPLORÁ-LO
         </span>
       </section>
     </div>
