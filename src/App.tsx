@@ -1,62 +1,17 @@
 
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { engineeringAreas } from './data/engineeringAreas'
+import EngineeringPage from './pages/EngineeringPage'
 import './App.css'
 
-const engineeringAreas = [
-  {
-    id: 'aerospace',
-    number: '01',
-    name: 'Engenharia Aeroespacial',
-    description:
-      'Explore sistemas espaciais, aeronaves, satélites, dinâmica orbital e tecnologias de voo.',
-    project: 'Anatomia de um satélite',
-    icon: '◈',
-  },
-  {
-    id: 'automotive',
-    number: '02',
-    name: 'Engenharia Automotiva',
-    description:
-      'Descubra os sistemas mecânicos, estruturas, propulsão e dinâmica dos veículos.',
-    project: 'Anatomia de um veículo',
-    icon: '⌁',
-  },
-  {
-    id: 'energy',
-    number: '03',
-    name: 'Engenharia de Energia',
-    description:
-      'Entenda a geração, conversão, armazenamento e distribuição de energia.',
-    project: 'Sistema de conversão energética',
-    icon: 'ϟ',
-  },
-  {
-    id: 'electronics',
-    number: '04',
-    name: 'Engenharia Eletrônica',
-    description:
-      'Explore circuitos, sensores, sistemas embarcados, instrumentação e automação.',
-    project: 'Sistema eletrônico interativo',
-    icon: '⌘',
-  },
-  {
-    id: 'software',
-    number: '05',
-    name: 'Engenharia de Software',
-    description:
-      'Conheça a arquitetura, organização e construção de sistemas computacionais.',
-    project: 'Arquitetura de um sistema',
-    icon: '{ }',
-  },
-]
-
-function App() {
+function HomePage() {
   return (
     <main className="atlas">
       <header className="navbar">
-        <a className="brand" href="#">
+        <Link className="brand" to="/">
           <span className="brand-symbol">E.</span>
           <span>ENGINEERING ATLAS</span>
-        </a>
+        </Link>
 
         <nav>
           <a href="#explore">Explorar</a>
@@ -134,10 +89,20 @@ function App() {
 
         <div className="engineering-grid">
           {engineeringAreas.map((area) => (
-            <article className="engineering-card" key={area.id}>
+            <Link
+              className="engineering-card"
+              to={`/engineering/${area.id}`}
+              key={area.id}
+            >
               <div className="card-top">
                 <span>{area.number} / 05</span>
-                <span className="card-icon">{area.icon}</span>
+                <span className="card-icon">
+                  {area.id === 'aerospace' && '◈'}
+                  {area.id === 'automotive' && '⌁'}
+                  {area.id === 'energy' && 'ϟ'}
+                  {area.id === 'electronics' && '⌘'}
+                  {area.id === 'software' && '{ }'}
+                </span>
               </div>
 
               <div className="card-content">
@@ -152,7 +117,7 @@ function App() {
                 </div>
                 <span className="card-arrow">↗</span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -163,6 +128,20 @@ function App() {
         <span>DESIGN / EXPLORE / UNDERSTAND</span>
       </footer>
     </main>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/engineering/:id"
+          element={<EngineeringPage />}
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
