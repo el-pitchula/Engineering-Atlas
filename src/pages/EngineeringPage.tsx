@@ -21,6 +21,13 @@ function EngineeringPage() {
     )
   }
 
+  const projectRoutes: Record<string, string> = {
+    aerospace: '/engineering/aerospace/satellite',
+    automotive: '/engineering/automotive/brakes',
+  }
+
+  const projectRoute = projectRoutes[area.id]
+
   return (
     <main className="engineering-page">
       <header className="engineering-header">
@@ -80,14 +87,14 @@ function EngineeringPage() {
             <h2>{area.project}</h2>
             <p>{area.projectDescription}</p>
 
-            {area.id === 'aerospace' ? (
+            {projectRoute ? (
               <>
                 <span className="project-status">
-                  PROJETO EM DESENVOLVIMENTO
+                  PROJETO INTERATIVO
                 </span>
 
                 <Link
-                  to="/engineering/aerospace/satellite"
+                  to={projectRoute}
                   className="project-explore-link"
                 >
                   EXPLORAR PROJETO →
