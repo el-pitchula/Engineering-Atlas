@@ -1,6 +1,7 @@
 
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import type { ThreeEvent } from '@react-three/fiber'
 import { Html, Line } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -18,6 +19,19 @@ interface CalloutProps {
   points: [number, number, number][]
 }
 
+const COLORS = {
+  aluminum: '#aebdca',
+  aluminumDark: '#657789',
+  blue: '#315f91',
+  blueLight: '#5d91c3',
+  red: '#e05252',
+  gold: '#c5a66a',
+  pcb: '#28634f',
+  pcbDark: '#174332',
+  black: '#202b36',
+  white: '#e1e8ee',
+}
+
 function Callout({
   number,
   title,
@@ -25,7 +39,7 @@ function Callout({
   position,
   points,
 }: CalloutProps) {
-  const color = active ? '#c6f36a' : '#9da99a'
+  const color = active ? '#e05252' : '#8bb9e8'
 
   return (
     <group>
@@ -52,23 +66,53 @@ function Callout({
             gap: '7px',
             padding: '7px 10px',
             border: `1px solid ${color}`,
-            borderRadius: '4px',
-            background: 'rgba(16, 23, 19, 0.94)',
-            color: active ? '#c6f36a' : '#d5ddd1',
+            borderRadius: '3px',
+            background: 'rgba(9, 20, 35, 0.96)',
+            color: active ? '#ffffff' : '#c7d8e9',
             fontFamily: 'DM Mono, monospace',
             fontSize: '10px',
             boxShadow: active
-              ? '0 0 12px rgba(198, 243, 106, 0.2)'
+              ? '0 0 14px rgba(224, 82, 82, 0.25)'
               : 'none',
           }}
         >
-          <strong>{number}</strong>
+          <strong style={{ color }}>{number}</strong>
           <span>{title}</span>
         </div>
       </Html>
     </group>
   )
 }
+
+/* PARAFUSOS E FIXADORES */
+
+function Fastener({
+  position,
+  color = '#c3cbd2',
+}: {
+  position: [number, number, number]
+  color?: string
+}) {
+  return (
+    <group position={position}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.032, 0.032, 0.018, 12]} />
+        <meshStandardMaterial
+          color={color}
+          metalness={0.9}
+          roughness={0.25}
+        />
+      </mesh>
+
+      <mesh position={[0, 0, 0.011]}>
+        <boxGeometry args={[0.025, 0.004, 0.006]} />
+        <meshStandardMaterial color="#384653" metalness={0.7} />
+      </mesh>
+    </group>
+  )
+}
+
+/* PAINÉIS SOLARES */
 
 function SolarPanel({
   onSelect,
@@ -79,51 +123,484 @@ function SolarPanel({
 }) {
   const cells = []
 
-  // Duas colunas e oito fileiras de células
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 2; col++) {
       cells.push({
-        x: -0.22 + col * 0.44,
-        y: -1.33 + row * 0.38,
+        x: -0.215 + col * 0.43,
+        y: -1.32 + row * 0.375,
       })
     }
   }
 
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
   return (
     <group>
-      {/* Base estrutural do painel */}
-      <mesh
-        onClick={(event) => {
-          event.stopPropagation()
-          onSelect()
-        }}
-      >
-        <boxGeometry args={[0.9, 3.2, 0.07]} />
+      <mesh onClick={handleClick}>
+        <boxGeometry args={[0.98, 3.25, 0.075]} />
         <meshStandardMaterial
-          color={selected ? '#668f45' : '#273d58'}
-          metalness={0.65}
+          color="#263d56"
+          metalness={0.7}
           roughness={0.35}
         />
       </mesh>
 
-      {/* Células fotovoltaicas */}
+      {[-0.47, 0.47].map((x) => (
+        <mesh key={x} position={[x, 0, 0.045]} onClick={handleClick}>
+          <boxGeometry args={[0.035, 3.3, 0.035]} />
+          <meshStandardMaterial
+            color={COLORS.aluminum}
+            metalness={0.85}
+            roughness={0.28}
+          />
+        </mesh>
+      ))}
+
+      {[-1.62, 1.62].map((y) => (
+        <mesh key={y} position={[0, y, 0.045]} onClick={handleClick}>
+          <boxGeometry args={[0.98, 0.035, 0.035]} />
+          <meshStandardMaterial
+            color={COLORS.aluminum}
+            metalness={0.85}
+            roughness={0.28}
+          />
+        </mesh>
+      ))}
+
       {cells.map((cell, index) => (
         <mesh
           key={index}
-          position={[cell.x, cell.y, 0.041]}
-          onClick={(event) => {
-            event.stopPropagation()
-            onSelect()
-          }}
+          position={[cell.x, cell.y, 0.045]}
+          onClick={handleClick}
         >
-          <boxGeometry args={[0.36, 0.32, 0.012]} />
+          <boxGeometry args={[0.395, 0.345, 0.014]} />
           <meshStandardMaterial
-            color={selected ? '#a2d76c' : '#3679a9'}
-            metalness={0.45}
+            color={selected ? '#79a9d5' : '#285d8c'}
+            metalness={0.55}
+            roughness={0.25}
+            emissive={selected ? '#183d60' : '#071b30'}
+          />
+        </mesh>
+      ))}
+
+      {[-0.9, -0.48, 0, 0.48, 0.9].map((y) => (
+        <mesh key={y} position={[0, y, 0.055]}>
+          <boxGeometry args={[0.86, 0.008, 0.004]} />
+          <meshStandardMaterial color="#8bb9e8" />
+        </mesh>
+      ))}
+
+      {[-0.4, 0.4].map((x) =>
+        [-1.55, 1.55].map((y) => (
+          <Fastener key={`${x}-${y}`} position={[x, y, 0.07]} />
+        ))
+      )}
+    </group>
+  )
+}
+
+/* ESTRUTURA PRINCIPAL */
+
+function SatelliteStructure({
+  selected,
+  onSelect,
+  exploded,
+}: {
+  selected: boolean
+  onSelect: () => void
+  exploded: boolean
+}) {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
+  return (
+    <group>
+      {[-1, 1].flatMap((x) =>
+        [-1, 1].map((z) => (
+          <group
+            key={`${x}-${z}`}
+            position={[x * 0.455, 0, z * 0.455]}
+          >
+            <mesh onClick={handleClick}>
+              <boxGeometry args={[0.085, 3.405, 0.085]} />
+              <meshStandardMaterial
+                color={selected ? '#e05252' : COLORS.aluminum}
+                metalness={0.88}
+                roughness={0.25}
+              />
+            </mesh>
+
+            <mesh position={[-x * 0.025, 0, -z * 0.025]}>
+              <boxGeometry args={[0.025, 3.25, 0.025]} />
+              <meshStandardMaterial
+                color={COLORS.aluminumDark}
+                metalness={0.85}
+                roughness={0.3}
+              />
+            </mesh>
+          </group>
+        ))
+      )}
+
+      {[-1, 1].map((y) => (
+        <group key={y} position={[0, y * 1.66, 0]}>
+          <mesh onClick={handleClick}>
+            <boxGeometry args={[1.02, 0.085, 1.02]} />
+            <meshStandardMaterial
+              color={selected ? '#e05252' : '#8294a5'}
+              metalness={0.85}
+              roughness={0.3}
+            />
+          </mesh>
+
+          <mesh position={[0, y * 0.046, 0]}>
+            <boxGeometry args={[0.72, 0.012, 0.72]} />
+            <meshStandardMaterial
+              color="#465c70"
+              metalness={0.75}
+              roughness={0.35}
+            />
+          </mesh>
+
+          {[-0.39, 0.39].map((x) =>
+            [-0.39, 0.39].map((z) => (
+              <Fastener
+                key={`${x}-${z}`}
+                position={[x, y * 0.052, z]}
+              />
+            ))
+          )}
+        </group>
+      ))}
+
+      {[-0.55, 0.55].map((y) => (
+        <mesh key={y} position={[0, y, 0]} onClick={handleClick}>
+          <boxGeometry args={[0.9, 0.055, 0.9]} />
+          <meshStandardMaterial
+            color="#8799a8"
+            metalness={0.85}
             roughness={0.3}
           />
         </mesh>
       ))}
+
+      {[-1, 1].map((x) => (
+        <mesh
+          key={x}
+          position={[x * 0.44, 0, 0]}
+          onClick={handleClick}
+        >
+          <boxGeometry args={[0.025, 2.8, 0.48]} />
+          <meshStandardMaterial
+            color="#566b7d"
+            metalness={0.8}
+            roughness={0.4}
+            transparent
+            opacity={0.65}
+          />
+        </mesh>
+      ))}
+
+      {exploded && (
+        <Callout
+          number="01"
+          title="Estrutura primária"
+          active={selected}
+          points={[
+            [0.45, 0.5, 0.4],
+            [0.95, 0.65, 0.2],
+            [1.35, 0.65, 0.2],
+          ]}
+          position={[1.65, 0.65, 0.2]}
+        />
+      )}
+    </group>
+  )
+}
+
+/* BATERIA */
+
+function BatteryModule({
+  selected,
+  onSelect,
+}: {
+  selected: boolean
+  onSelect: () => void
+}) {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
+  return (
+    <group>
+      <mesh onClick={handleClick}>
+        <boxGeometry args={[0.54, 0.38, 0.43]} />
+        <meshStandardMaterial
+          color={selected ? '#e05252' : '#596a79'}
+          metalness={0.75}
+          roughness={0.35}
+        />
+      </mesh>
+
+      {[-0.16, 0, 0.16].map((x) => (
+        <group key={x} position={[x, 0, 0.225]}>
+          <mesh onClick={handleClick}>
+            <boxGeometry args={[0.125, 0.29, 0.035]} />
+            <meshStandardMaterial
+              color={selected ? '#e05252' : '#d2bd8b'}
+              metalness={0.65}
+              roughness={0.3}
+            />
+          </mesh>
+
+          <mesh position={[0, 0.16, 0]}>
+            <boxGeometry args={[0.075, 0.012, 0.02]} />
+            <meshStandardMaterial color="#7b8993" metalness={0.8} />
+          </mesh>
+        </group>
+      ))}
+
+      <mesh position={[0, 0.2, 0]}>
+        <boxGeometry args={[0.48, 0.025, 0.37]} />
+        <meshStandardMaterial
+          color="#9ba8b0"
+          metalness={0.8}
+          roughness={0.3}
+        />
+      </mesh>
+
+      <mesh position={[0.25, 0.12, -0.12]}>
+        <boxGeometry args={[0.08, 0.1, 0.12]} />
+        <meshStandardMaterial color={COLORS.gold} metalness={0.8} />
+      </mesh>
+    </group>
+  )
+}
+
+/* COMPUTADOR DE BORDO */
+
+function ComputerModule({
+  selected,
+  onSelect,
+}: {
+  selected: boolean
+  onSelect: () => void
+}) {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
+  const components = [
+    [-0.18, -0.14],
+    [0.18, -0.14],
+    [-0.18, 0.14],
+    [0.18, 0.14],
+  ]
+
+  return (
+    <group>
+      <mesh onClick={handleClick}>
+        <boxGeometry args={[0.56, 0.055, 0.46]} />
+        <meshStandardMaterial
+          color={selected ? '#477c68' : COLORS.pcb}
+          metalness={0.35}
+          roughness={0.5}
+        />
+      </mesh>
+
+      <mesh position={[0, -0.033, 0]}>
+        <boxGeometry args={[0.52, 0.012, 0.42]} />
+        <meshStandardMaterial color={COLORS.pcbDark} />
+      </mesh>
+
+      <mesh position={[0, 0.06, 0]} onClick={handleClick}>
+        <boxGeometry args={[0.19, 0.07, 0.19]} />
+        <meshStandardMaterial
+          color={selected ? '#e05252' : '#303d49'}
+          metalness={0.75}
+          roughness={0.25}
+        />
+      </mesh>
+
+      {components.map(([x, z], index) => (
+        <mesh
+          key={index}
+          position={[x, 0.045, z]}
+          onClick={handleClick}
+        >
+          <boxGeometry args={[0.085, 0.035, 0.075]} />
+          <meshStandardMaterial
+            color={COLORS.gold}
+            metalness={0.7}
+            roughness={0.3}
+          />
+        </mesh>
+      ))}
+
+      {[-0.23, 0.23].map((x) => (
+        <mesh
+          key={x}
+          position={[x, 0.055, 0]}
+          onClick={handleClick}
+        >
+          <cylinderGeometry args={[0.035, 0.035, 0.045, 12]} />
+          <meshStandardMaterial color="#aeb7bd" metalness={0.8} />
+        </mesh>
+      ))}
+
+      {[-1, 1].map((x) => (
+        <mesh key={x} position={[x * 0.29, 0.025, 0]}>
+          <boxGeometry args={[0.065, 0.075, 0.2]} />
+          <meshStandardMaterial color="#c1c8cd" metalness={0.85} />
+        </mesh>
+      ))}
+
+      {[-0.1, 0.1].map((z) => (
+        <mesh key={z} position={[0, 0.029, z]}>
+          <boxGeometry args={[0.42, 0.005, 0.006]} />
+          <meshStandardMaterial color="#c5a66a" metalness={0.7} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+/* CARGA ÚTIL / INSTRUMENTO ÓPTICO */
+
+function PayloadModule({
+  selected,
+  onSelect,
+}: {
+  selected: boolean
+  onSelect: () => void
+}) {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
+  return (
+    <group>
+      <mesh onClick={handleClick}>
+        <boxGeometry args={[0.65, 0.38, 0.5]} />
+        <meshStandardMaterial
+          color={selected ? '#e05252' : '#657f99'}
+          metalness={0.75}
+          roughness={0.3}
+        />
+      </mesh>
+
+      <mesh position={[0, 0, 0.27]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.19, 0.19, 0.055, 32]} />
+        <meshStandardMaterial
+          color="#bac5ce"
+          metalness={0.9}
+          roughness={0.2}
+        />
+      </mesh>
+
+      <mesh
+        position={[0, 0, 0.36]}
+        rotation={[Math.PI / 2, 0, 0]}
+        onClick={handleClick}
+      >
+        <cylinderGeometry args={[0.145, 0.145, 0.22, 32]} />
+        <meshStandardMaterial
+          color="#273b51"
+          metalness={0.85}
+          roughness={0.25}
+        />
+      </mesh>
+
+      <mesh position={[0, 0, 0.48]} onClick={handleClick}>
+        <circleGeometry args={[0.115, 32]} />
+        <meshPhysicalMaterial
+          color="#477ba8"
+          metalness={0.65}
+          roughness={0.12}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      <mesh position={[0, 0, 0.49]}>
+        <torusGeometry args={[0.125, 0.012, 8, 32]} />
+        <meshStandardMaterial color={COLORS.aluminum} metalness={0.9} />
+      </mesh>
+
+      {[-0.23, 0.23].map((x) =>
+        [-0.13, 0.13].map((y) => (
+          <Fastener key={`${x}-${y}`} position={[x, y, 0.255]} />
+        ))
+      )}
+    </group>
+  )
+}
+
+/* ANTENA DE COMUNICAÇÃO */
+
+function CommunicationAntenna({
+  selected,
+  onSelect,
+}: {
+  selected: boolean
+  onSelect: () => void
+}) {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    onSelect()
+  }
+
+  return (
+    <group rotation={[0.35, 0, 0]}>
+      <mesh position={[0, 0.04, 0]}>
+        <cylinderGeometry args={[0.12, 0.14, 0.09, 24]} />
+        <meshStandardMaterial
+          color={COLORS.aluminumDark}
+          metalness={0.85}
+        />
+      </mesh>
+
+      <mesh position={[0, 0.32, 0]} onClick={handleClick}>
+        <cylinderGeometry args={[0.035, 0.045, 0.55, 16]} />
+        <meshStandardMaterial
+          color={COLORS.aluminum}
+          metalness={0.9}
+          roughness={0.22}
+        />
+      </mesh>
+
+      <mesh position={[0, 0.58, 0]} onClick={handleClick}>
+        <circleGeometry args={[0.42, 48]} />
+        <meshStandardMaterial
+          color={selected ? '#e05252' : '#c4cbd1'}
+          side={THREE.DoubleSide}
+          metalness={0.85}
+          roughness={0.22}
+        />
+      </mesh>
+
+      <mesh position={[0, 0.58, 0]}>
+        <torusGeometry args={[0.415, 0.018, 8, 48]} />
+        <meshStandardMaterial color={COLORS.aluminum} metalness={0.9} />
+      </mesh>
+
+      <mesh position={[0, 0.58, 0.04]}>
+        <sphereGeometry args={[0.065, 20, 20]} />
+        <meshStandardMaterial
+          color={COLORS.gold}
+          metalness={0.85}
+          emissive="#33200b"
+        />
+      </mesh>
     </group>
   )
 }
@@ -179,122 +656,21 @@ export default function SatelliteModel({
 
   return (
     <group>
-      {/* ESTRUTURA PRIMÁRIA — CUBESAT 3U */}
       <group ref={bodyRef}>
-        {/* Quatro trilhos longitudinais */}
-        {[-1, 1].flatMap((x) =>
-          [-1, 1].map((z) => (
-            <mesh
-              key={`${x}-${z}`}
-              position={[x * 0.455, 0, z * 0.455]}
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('structure')
-              }}
-            >
-              <boxGeometry args={[0.085, 3.405, 0.085]} />
-              <meshStandardMaterial
-                color={structureSelected ? '#c6f36a' : '#b7b8b0'}
-                metalness={0.8}
-                roughness={0.3}
-              />
-            </mesh>
-          ))
-        )}
-
-        {/* Placas estruturais das extremidades */}
-        {[-1, 1].map((y) => (
-          <mesh
-            key={y}
-            position={[0, y * 1.66, 0]}
-            onClick={(event) => {
-              event.stopPropagation()
-              onSelect('structure')
-            }}
-          >
-            <boxGeometry args={[1, 0.08, 1]} />
-            <meshStandardMaterial
-              color={structureSelected ? '#c6f36a' : '#929991'}
-              metalness={0.8}
-              roughness={0.35}
-              transparent
-              opacity={0.85}
-            />
-          </mesh>
-        ))}
-
-        {/* Travessas de sustentação */}
-        {[-0.55, 0.55].map((y) => (
-          <mesh
-            key={y}
-            position={[0, y, 0]}
-            onClick={(event) => {
-              event.stopPropagation()
-              onSelect('structure')
-            }}
-          >
-            <boxGeometry args={[0.9, 0.055, 0.9]} />
-            <meshStandardMaterial
-              color="#9da49a"
-              metalness={0.75}
-            />
-          </mesh>
-        ))}
-
-        {exploded && (
-          <Callout
-            number="01"
-            title="Estrutura primária"
-            active={structureSelected}
-            points={[
-              [0.45, 0.5, 0.4],
-              [0.95, 0.65, 0.2],
-              [1.35, 0.65, 0.2],
-            ]}
-            position={[1.65, 0.65, 0.2]}
-          />
-        )}
+        <SatelliteStructure
+          selected={structureSelected}
+          onSelect={() => onSelect('structure')}
+          exploded={exploded}
+        />
       </group>
 
-
-      {/* MÓDULOS INTERNOS */}
       {exploded && (
         <group>
-          {/* 04 — BATERIA */}
           <group position={[-0.35, -1.05, 0.25]}>
-            {/* Estrutura de suporte */}
-            <mesh
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('battery')
-              }}
-            >
-              <boxGeometry args={[0.48, 0.35, 0.38]} />
-              <meshStandardMaterial
-                color="#8c7449"
-                metalness={0.65}
-                roughness={0.4}
-              />
-            </mesh>
-
-            {/* Células da bateria */}
-            {[-0.14, 0, 0.14].map((x) => (
-              <mesh
-                key={x}
-                position={[x, 0, 0.195]}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onSelect('battery')
-                }}
-              >
-                <boxGeometry args={[0.105, 0.27, 0.025]} />
-                <meshStandardMaterial
-                  color={batterySelected ? '#c6f36a' : '#d5bd82'}
-                  metalness={0.55}
-                  roughness={0.35}
-                />
-              </mesh>
-            ))}
+            <BatteryModule
+              selected={batterySelected}
+              onSelect={() => onSelect('battery')}
+            />
 
             <Callout
               number="04"
@@ -309,61 +685,11 @@ export default function SatelliteModel({
             />
           </group>
 
-          {/* 05 — COMPUTADOR DE BORDO */}
           <group position={[0.35, -0.1, 0.25]}>
-            {/* Placa eletrônica */}
-            <mesh
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('computer')
-              }}
-            >
-              <boxGeometry args={[0.48, 0.055, 0.38]} />
-              <meshStandardMaterial
-                color={computerSelected ? '#c6f36a' : '#286c58'}
-                metalness={0.4}
-                roughness={0.5}
-              />
-            </mesh>
-
-            {/* Processador principal */}
-            <mesh
-              position={[0, 0.045, 0]}
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('computer')
-              }}
-            >
-              <boxGeometry args={[0.17, 0.055, 0.17]} />
-              <meshStandardMaterial
-                color="#343b40"
-                metalness={0.7}
-                roughness={0.3}
-              />
-            </mesh>
-
-            {/* Componentes auxiliares */}
-            {[
-              [-0.15, 0, -0.12],
-              [0.15, 0, -0.12],
-              [-0.15, 0, 0.12],
-              [0.15, 0, 0.12],
-            ].map((position, index) => (
-              <mesh
-                key={index}
-                position={[position[0], 0.045, position[2]]}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onSelect('computer')
-                }}
-              >
-                <boxGeometry args={[0.075, 0.035, 0.065]} />
-                <meshStandardMaterial
-                  color="#b8a76e"
-                  metalness={0.65}
-                />
-              </mesh>
-            ))}
+            <ComputerModule
+              selected={computerSelected}
+              onSelect={() => onSelect('computer')}
+            />
 
             <Callout
               number="05"
@@ -378,56 +704,11 @@ export default function SatelliteModel({
             />
           </group>
 
-          {/* 06 — CARGA ÚTIL */}
           <group position={[0, 1.05, 0.25]}>
-            {/* Corpo do instrumento */}
-            <mesh
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('payload')
-              }}
-            >
-              <boxGeometry args={[0.65, 0.35, 0.5]} />
-              <meshStandardMaterial
-                color={payloadSelected ? '#c6f36a' : '#7389a6'}
-                metalness={0.6}
-                roughness={0.35}
-              />
-            </mesh>
-
-            {/* Tubo óptico */}
-            <mesh
-              position={[0, 0, 0.29]}
-              rotation={[Math.PI / 2, 0, 0]}
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('payload')
-              }}
-            >
-              <cylinderGeometry args={[0.15, 0.15, 0.18, 32]} />
-              <meshStandardMaterial
-                color="#aeb6bd"
-                metalness={0.8}
-                roughness={0.25}
-              />
-            </mesh>
-
-            {/* Lente */}
-            <mesh
-              position={[0, 0, 0.39]}
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect('payload')
-              }}
-            >
-              <circleGeometry args={[0.115, 32]} />
-              <meshStandardMaterial
-                color="#315c83"
-                metalness={0.75}
-                roughness={0.15}
-                side={THREE.DoubleSide}
-              />
-            </mesh>
+            <PayloadModule
+              selected={payloadSelected}
+              onSelect={() => onSelect('payload')}
+            />
 
             <Callout
               number="06"
@@ -444,47 +725,11 @@ export default function SatelliteModel({
         </group>
       )}
 
-      {/* ANTENA DE COMUNICAÇÃO */}
       <group ref={antennaRef} position={[0, 1.65, 0.1]}>
-        <group rotation={[0.35, 0, 0]}>
-          <mesh
-            position={[0, 0.28, 0]}
-            onClick={(event) => {
-              event.stopPropagation()
-              onSelect('antenna')
-            }}
-          >
-            <cylinderGeometry args={[0.035, 0.035, 0.55, 12]} />
-            <meshStandardMaterial
-              color="#b9b9ad"
-              metalness={0.8}
-            />
-          </mesh>
-
-          <mesh
-            position={[0, 0.55, 0]}
-            onClick={(event) => {
-              event.stopPropagation()
-              onSelect('antenna')
-            }}
-          >
-            <circleGeometry args={[0.42, 48]} />
-            <meshStandardMaterial
-              color={antennaSelected ? '#c6f36a' : '#d6d2bd'}
-              side={THREE.DoubleSide}
-              metalness={0.7}
-              roughness={0.25}
-            />
-          </mesh>
-
-          <mesh position={[0, 0.55, 0.035]}>
-            <sphereGeometry args={[0.055, 16, 16]} />
-            <meshStandardMaterial
-              color="#c6f36a"
-              emissive="#526b21"
-            />
-          </mesh>
-        </group>
+        <CommunicationAntenna
+          selected={antennaSelected}
+          onSelect={() => onSelect('antenna')}
+        />
 
         {exploded && (
           <Callout
@@ -501,7 +746,6 @@ export default function SatelliteModel({
         )}
       </group>
 
-      {/* PAINEL SOLAR ESQUERDO */}
       <group ref={leftPanelRef} position={[-1.55, 0, 0]}>
         <SolarPanel
           onSelect={() => onSelect('solar-panels')}
@@ -509,7 +753,6 @@ export default function SatelliteModel({
         />
       </group>
 
-      {/* PAINEL SOLAR DIREITO */}
       <group ref={rightPanelRef} position={[1.55, 0, 0]}>
         <SolarPanel
           onSelect={() => onSelect('solar-panels')}
@@ -531,22 +774,26 @@ export default function SatelliteModel({
         )}
       </group>
 
-      {/* CONECTORES */}
-      <mesh position={[-0.95, 0, 0]}>
-        <boxGeometry args={[0.65, 0.08, 0.08]} />
-        <meshStandardMaterial
-          color="#9a9e95"
-          metalness={0.8}
-        />
-      </mesh>
+      {[-1, 1].map((x) => (
+        <group key={x} position={[x * 0.95, 0, 0]}>
+          <mesh>
+            <boxGeometry args={[0.65, 0.08, 0.08]} />
+            <meshStandardMaterial
+              color={COLORS.aluminumDark}
+              metalness={0.9}
+              roughness={0.25}
+            />
+          </mesh>
 
-      <mesh position={[0.95, 0, 0]}>
-        <boxGeometry args={[0.65, 0.08, 0.08]} />
-        <meshStandardMaterial
-          color="#9a9e95"
-          metalness={0.8}
-        />
-      </mesh>
+          <mesh position={[0, 0, 0.045]}>
+            <boxGeometry args={[0.4, 0.035, 0.015]} />
+            <meshStandardMaterial
+              color={COLORS.gold}
+              metalness={0.8}
+            />
+          </mesh>
+        </group>
+      ))}
     </group>
   )
 }

@@ -29,7 +29,10 @@ function EngineeringPage() {
   const projectRoute = projectRoutes[area.id]
 
   return (
-    <main className="engineering-page">
+    <main
+      className={`engineering-page engineering-${area.id}`}
+      data-engineering={area.id}
+    >
       <header className="engineering-header">
         <Link to="/" className="back-link">
           ← VOLTAR AO ATLAS
@@ -41,38 +44,64 @@ function EngineeringPage() {
       </header>
 
       <section className="engineering-hero">
-        <span className="section-label">
-          FACULDADE DO GAMA · UNB
-        </span>
+        <div className="engineering-hero-content">
+          <span className="section-label">
+            FACULDADE DO GAMA · UNB
+          </span>
 
-        <h1>{area.name}</h1>
+          <h1>{area.name}</h1>
 
-        <p>{area.description}</p>
+          <p>{area.description}</p>
+        </div>
 
-        <span className="engineering-index">
-          DISCIPLINA {area.number} / 05
+        <div className="engineering-hero-index">
+          <span>DISCIPLINA</span>
+          <strong>{area.number}</strong>
+          <span>05 / ENGINEERING AREAS</span>
+        </div>
+
+        <span className="engineering-reference">
+          RESEARCH ATLAS / {area.id.toUpperCase()}
         </span>
       </section>
 
       <section className="engineering-overview">
-        <span className="section-label">01 / VISÃO GERAL</span>
+        <div className="engineering-section-heading">
+          <span className="section-label">
+            01 / VISÃO GERAL
+          </span>
+          <span className="section-reference">
+            INTRODUCTION
+          </span>
+        </div>
 
-        <div>
+        <div className="overview-content">
           <h2>O que essa engenharia estuda?</h2>
           <p>{area.overview}</p>
         </div>
       </section>
 
       <section className="engineering-fields">
-        <span className="section-label">02 / CAMPOS DE ATUAÇÃO</span>
+        <div className="engineering-section-heading">
+          <span className="section-label">
+            02 / CAMPOS DE ATUAÇÃO
+          </span>
+          <span className="section-reference">
+            AREAS OF STUDY
+          </span>
+        </div>
 
         <h2>Áreas de exploração</h2>
 
         <div className="fields-grid">
           {area.fields.map((field, index) => (
             <article className="field-card" key={field}>
-              <span>0{index + 1}</span>
+              <span className="field-number">
+                0{index + 1}
+              </span>
+
               <h3>{field}</h3>
+
               <span className="field-arrow">↗</span>
             </article>
           ))}
@@ -80,37 +109,67 @@ function EngineeringPage() {
       </section>
 
       <section className="featured-project">
-        <span className="section-label">03 / PROJETO EM DESTAQUE</span>
+        <div className="engineering-section-heading">
+          <span className="section-label">
+            03 / PROJETO EM DESTAQUE
+          </span>
+          <span className="section-reference">
+            FEATURED PROJECT
+          </span>
+        </div>
 
         <div className="project-content">
-          <div>
+          <div className="project-information">
+            <span className="project-kicker">
+              ENGINEERING PROJECT / {area.number}
+            </span>
+
             <h2>{area.project}</h2>
+
             <p>{area.projectDescription}</p>
 
             {projectRoute ? (
-              <>
+              <div className="project-access">
                 <span className="project-status">
-                  PROJETO INTERATIVO
+                  <span className="status-indicator" />
+                  PROJETO INTERATIVO DISPONÍVEL
                 </span>
 
                 <Link
                   to={projectRoute}
                   className="project-explore-link"
+                  aria-label={`Explorar projeto 3D: ${area.project}`}
                 >
-                  EXPLORAR PROJETO →
+                  <span className="project-link-content">
+                    <strong>EXPLORAR MODELO 3D</strong>
+                    <small>
+                      Visualização interativa e análise dos componentes
+                    </small>
+                  </span>
+
+                  <span className="project-link-arrow">↗</span>
                 </Link>
-              </>
+              </div>
             ) : (
               <span className="project-status">
+                <span className="status-indicator status-pending" />
                 PROJETO EM DESENVOLVIMENTO
               </span>
             )}
           </div>
 
           <div className="project-visual">
-            <span>{area.number}</span>
+            <span className="project-visual-number">
+              {area.number}
+            </span>
+
             <strong>ATLAS</strong>
+
             <small>INTERACTIVE PROJECT</small>
+
+            <span className="project-visual-coordinate">
+              FGA / UNB
+            </span>
           </div>
         </div>
       </section>
