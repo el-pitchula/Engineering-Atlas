@@ -218,54 +218,134 @@ function SatelliteStructure({
     onSelect()
   }
 
+  const railPositions = [-1, 1]
+  const bracketHeights = [-1.25, 0, 1.25]
+
   return (
     <group>
-      {[-1, 1].flatMap((x) =>
-        [-1, 1].map((z) => (
+      {/* QUATRO TRILHOS ESTRUTURAIS */}
+
+      {railPositions.flatMap((x) =>
+        railPositions.map((z) => (
           <group
-            key={`${x}-${z}`}
+            key={`rail-${x}-${z}`}
             position={[x * 0.455, 0, z * 0.455]}
           >
             <mesh onClick={handleClick}>
               <boxGeometry args={[0.085, 3.405, 0.085]} />
               <meshStandardMaterial
                 color={selected ? '#e05252' : COLORS.aluminum}
-                metalness={0.88}
-                roughness={0.25}
+                metalness={0.9}
+                roughness={0.24}
               />
             </mesh>
 
-            <mesh position={[-x * 0.025, 0, -z * 0.025]}>
-              <boxGeometry args={[0.025, 3.25, 0.025]} />
+            <mesh
+              position={[-x * 0.026, 0, -z * 0.026]}
+              onClick={handleClick}
+            >
+              <boxGeometry args={[0.022, 3.25, 0.022]} />
               <meshStandardMaterial
                 color={COLORS.aluminumDark}
                 metalness={0.85}
-                roughness={0.3}
+                roughness={0.32}
               />
             </mesh>
+
+            <mesh
+              position={[x * 0.044, 0, z * 0.044]}
+              onClick={handleClick}
+            >
+              <boxGeometry args={[0.008, 3.28, 0.008]} />
+              <meshStandardMaterial
+                color="#d9e1e8"
+                metalness={0.95}
+                roughness={0.2}
+              />
+            </mesh>
+
+            {/* ABRAÇADEIRAS DE FIXAÇÃO */}
+
+            {bracketHeights.map((y) => (
+              <group key={`bracket-${y}`} position={[0, y, 0]}>
+                <mesh onClick={handleClick}>
+                  <boxGeometry args={[0.112, 0.105, 0.112]} />
+                  <meshStandardMaterial
+                    color="#657789"
+                    metalness={0.9}
+                    roughness={0.3}
+                  />
+                </mesh>
+
+                <mesh position={[0, 0.055, 0]}>
+                  <boxGeometry args={[0.12, 0.012, 0.12]} />
+                  <meshStandardMaterial
+                    color="#c4cdd5"
+                    metalness={0.9}
+                    roughness={0.22}
+                  />
+                </mesh>
+              </group>
+            ))}
           </group>
         ))
       )}
 
+      {/* PLACAS DE EXTREMIDADE */}
+
       {[-1, 1].map((y) => (
-        <group key={y} position={[0, y * 1.66, 0]}>
+        <group key={`endplate-${y}`} position={[0, y * 1.66, 0]}>
           <mesh onClick={handleClick}>
             <boxGeometry args={[1.02, 0.085, 1.02]} />
             <meshStandardMaterial
               color={selected ? '#e05252' : '#8294a5'}
-              metalness={0.85}
-              roughness={0.3}
+              metalness={0.9}
+              roughness={0.28}
             />
           </mesh>
 
-          <mesh position={[0, y * 0.046, 0]}>
+          {/* PAINEL CENTRAL */}
+
+          <mesh position={[0, y * 0.047, 0]}>
             <boxGeometry args={[0.72, 0.012, 0.72]} />
             <meshStandardMaterial
               color="#465c70"
-              metalness={0.75}
-              roughness={0.35}
+              metalness={0.8}
+              roughness={0.38}
             />
           </mesh>
+
+          {/* MOLDURA DE ACABAMENTO */}
+
+          {[-0.38, 0.38].map((offset) => (
+            <group key={offset}>
+              <mesh
+                position={[offset, y * 0.05, 0]}
+                onClick={handleClick}
+              >
+                <boxGeometry args={[0.018, 0.012, 0.78]} />
+                <meshStandardMaterial
+                  color="#c2cbd3"
+                  metalness={0.95}
+                  roughness={0.22}
+                />
+              </mesh>
+
+              <mesh
+                position={[0, y * 0.05, offset]}
+                onClick={handleClick}
+              >
+                <boxGeometry args={[0.78, 0.012, 0.018]} />
+                <meshStandardMaterial
+                  color="#c2cbd3"
+                  metalness={0.95}
+                  roughness={0.22}
+                />
+              </mesh>
+            </group>
+          ))}
+
+          {/* FIXADORES */}
 
           {[-0.39, 0.39].map((x) =>
             [-0.39, 0.39].map((z) => (
@@ -278,33 +358,56 @@ function SatelliteStructure({
         </group>
       ))}
 
+      {/* REFORÇOS TRANSVERSAIS INTERNOS */}
+
       {[-0.55, 0.55].map((y) => (
-        <mesh key={y} position={[0, y, 0]} onClick={handleClick}>
+        <mesh
+          key={`crossbrace-${y}`}
+          position={[0, y, 0]}
+          onClick={handleClick}
+        >
           <boxGeometry args={[0.9, 0.055, 0.9]} />
           <meshStandardMaterial
             color="#8799a8"
-            metalness={0.85}
+            metalness={0.88}
             roughness={0.3}
           />
         </mesh>
       ))}
 
+      {/* CHAPAS LATERAIS DE REFORÇO */}
+
       {[-1, 1].map((x) => (
-        <mesh
-          key={x}
-          position={[x * 0.44, 0, 0]}
-          onClick={handleClick}
-        >
-          <boxGeometry args={[0.025, 2.8, 0.48]} />
-          <meshStandardMaterial
-            color="#566b7d"
-            metalness={0.8}
-            roughness={0.4}
-            transparent
-            opacity={0.65}
-          />
-        </mesh>
+        <group key={`side-${x}`} position={[x * 0.44, 0, 0]}>
+          <mesh onClick={handleClick}>
+            <boxGeometry args={[0.025, 2.8, 0.48]} />
+            <meshStandardMaterial
+              color="#566b7d"
+              metalness={0.85}
+              roughness={0.38}
+              transparent
+              opacity={0.65}
+            />
+          </mesh>
+
+          {[-0.7, 0, 0.7].map((y) => (
+            <mesh
+              key={y}
+              position={[x * 0.014, y, 0]}
+              onClick={handleClick}
+            >
+              <boxGeometry args={[0.008, 0.018, 0.4]} />
+              <meshStandardMaterial
+                color="#c1ccd5"
+                metalness={0.9}
+                roughness={0.25}
+              />
+            </mesh>
+          ))}
+        </group>
       ))}
+
+      {/* IDENTIFICAÇÃO DA ESTRUTURA */}
 
       {exploded && (
         <Callout
@@ -604,6 +707,8 @@ function CommunicationAntenna({
     </group>
   )
 }
+
+/* MODELO COMPLETO DO SATÉLITE */
 
 export default function SatelliteModel({
   onSelect,
