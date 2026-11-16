@@ -4,6 +4,9 @@ import { engineeringAreas } from './data/engineeringAreas'
 import EngineeringPage from './pages/EngineeringPage'
 import SatelliteProjectPage from './pages/SatelliteProjectPage'
 import AutomotiveProjectPage from './pages/AutomotiveProjectPage'
+import EnergyProjectPage from './pages/EnergyProjectPage'
+import ElectronicsProjectPage from './pages/ElectronicsProjectPage'
+import SoftwareProjectPage from './pages/SoftwareProjectPage'
 import './App.css'
 
 function HomePage() {
@@ -152,6 +155,21 @@ function App() {
         <Route
           path="/engineering/automotive/brakes"
           element={<AutomotiveProjectPage />}
+        />
+
+        <Route
+          path="/engineering/energy/turbine"
+          element={<EnergyProjectPage />}
+        />
+
+        <Route
+          path="/engineering/electronics/board"
+          element={<ElectronicsProjectPage />}
+        />
+
+        <Route
+          path="/engineering/software/architecture"
+          element={<SoftwareProjectPage />}
         />
       </Routes>
     </BrowserRouter>

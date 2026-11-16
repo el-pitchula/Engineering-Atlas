@@ -1,0 +1,285 @@
+
+.electronics-project-page {
+  --electronics-accent: #75c69a;
+  --electronics-highlight: #b4d98b;
+  --electronics-copper: #c58c4a;
+  --electronics-background: #101b19;
+  --electronics-surface: #192824;
+  --electronics-text: #edf3ee;
+  --electronics-muted: #9aafa5;
+  --electronics-line: #34483e;
+
+  min-height: 100vh;
+  padding: 0 7%;
+  background: var(--electronics-background);
+  color: var(--electronics-text);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.electronics-project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 76px;
+  border-bottom: 1px solid var(--electronics-line);
+}
+
+.electronics-back-link {
+  color: var(--electronics-muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.electronics-back-link:hover {
+  color: var(--electronics-accent);
+}
+
+.electronics-header-label {
+  color: var(--electronics-accent);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.09em;
+}
+
+/* =====================================================
+   INTRODUÇÃO
+===================================================== */
+
+.electronics-project-intro {
+  position: relative;
+  max-width: 1050px;
+  padding: 100px 0 75px;
+}
+
+.electronics-eyebrow {
+  display: block;
+  color: var(--electronics-accent);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+}
+
+.electronics-project-intro h1 {
+  max-width: 900px;
+  margin: 24px 0 26px;
+  color: var(--electronics-text);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.electronics-project-intro h1 span {
+  display: block;
+  color: var(--electronics-accent);
+}
+
+.electronics-project-intro > p {
+  max-width: 760px;
+  color: var(--electronics-muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.electronics-project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 34px;
+  margin-top: 42px;
+  padding-top: 20px;
+  border-top: 1px solid var(--electronics-line);
+}
+
+.electronics-project-meta span {
+  color: var(--electronics-muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.055em;
+}
+
+/* =====================================================
+   VISUALIZADOR 3D
+===================================================== */
+
+.electronics-viewer-section {
+  padding: 40px 0 90px;
+  border-top: 1px solid var(--electronics-line);
+}
+
+.electronics-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 34px;
+}
+
+.electronics-section-heading h2 {
+  margin: 12px 0 0;
+  color: var(--electronics-text);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.electronics-section-index {
+  padding-bottom: 5px;
+  color: var(--electronics-copper);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* =====================================================
+   ELEMENTOS FUNDAMENTAIS
+===================================================== */
+
+.electronics-systems-section {
+  padding: 65px 0 95px;
+  border-top: 1px solid var(--electronics-line);
+}
+
+.electronics-systems-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 42px;
+  row-gap: 45px;
+  margin-top: 48px;
+}
+
+.electronics-system-card {
+  position: relative;
+  min-width: 0;
+  padding-top: 17px;
+  border-top: 1px solid var(--electronics-line);
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.electronics-system-card:hover {
+  border-color: var(--electronics-accent);
+  transform: translateY(-3px);
+}
+
+.electronics-system-card > span {
+  color: var(--electronics-copper);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.electronics-system-card h3 {
+  margin: 18px 0 12px;
+  color: var(--electronics-text);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.electronics-system-card p {
+  margin: 0;
+  color: var(--electronics-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* =====================================================
+   GALERIA
+===================================================== */
+
+.electronics-project-page .project-gallery {
+  border-top: 1px solid var(--electronics-line);
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.electronics-project-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 85px;
+  margin-top: 30px;
+  border-top: 1px solid var(--electronics-line);
+}
+
+.electronics-project-footer span {
+  color: var(--electronics-muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* =====================================================
+   RESPONSIVIDADE
+===================================================== */
+
+@media (max-width: 900px) {
+  .electronics-project-page {
+    padding: 0 5%;
+  }
+
+  .electronics-systems-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .electronics-project-header {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+    padding: 17px 0;
+  }
+
+  .electronics-project-intro {
+    padding: 70px 0 55px;
+  }
+
+  .electronics-project-intro h1 {
+    font-size: 43px;
+  }
+
+  .electronics-project-meta {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .electronics-viewer-section {
+    padding: 35px 0 65px;
+  }
+
+  .electronics-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .electronics-systems-grid {
+    grid-template-columns: 1fr;
+    row-gap: 30px;
+  }
+
+  .electronics-project-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0;
+  }
+}

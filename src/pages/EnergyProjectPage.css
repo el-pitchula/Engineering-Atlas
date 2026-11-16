@@ -1,0 +1,204 @@
+
+.energy-project-page {
+  --energy-accent: #e5bd70;
+  --energy-highlight: #a5bd78;
+  --energy-background: #191a16;
+  --energy-surface: #25271f;
+  --energy-text: #f2f0e8;
+  --energy-muted: #aaa99c;
+  --energy-line: #424536;
+
+  min-height: 100vh;
+  padding: 0 7%;
+  background: var(--energy-background);
+  color: var(--energy-text);
+}
+
+.energy-project-header {
+  min-height: 76px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--energy-line);
+}
+
+.energy-back-link {
+  color: var(--energy-muted);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  transition: color 0.2s ease;
+}
+
+.energy-back-link:hover {
+  color: var(--energy-accent);
+}
+
+.energy-header-label,
+.energy-eyebrow,
+.energy-project-meta,
+.energy-section-index,
+.energy-project-footer {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.energy-header-label {
+  color: var(--energy-highlight);
+}
+
+.energy-project-intro {
+  max-width: 900px;
+  padding: 100px 0 85px;
+}
+
+.energy-eyebrow {
+  color: var(--energy-accent);
+}
+
+.energy-project-intro h1 {
+  margin: 22px 0;
+  color: var(--energy-text);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.08;
+  font-weight: 500;
+}
+
+.energy-project-intro h1 span {
+  color: var(--energy-accent);
+}
+
+.energy-project-intro p {
+  max-width: 720px;
+  color: var(--energy-muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.energy-project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 35px;
+  color: #858779;
+}
+
+.energy-viewer-section,
+.energy-systems-section {
+  padding: 55px 0;
+  border-top: 1px solid var(--energy-line);
+}
+
+.energy-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.energy-section-heading h2 {
+  margin: 10px 0 0;
+  color: var(--energy-text);
+  font-family: 'Playfair Display', serif;
+  font-size: 29px;
+  font-weight: 500;
+}
+
+.energy-section-index {
+  color: #858779;
+}
+
+.energy-systems-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 34px;
+}
+
+.energy-system-card {
+  position: relative;
+  min-height: 175px;
+  padding: 22px 4px 18px;
+  border-top: 1px solid var(--energy-line);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.energy-system-card:hover {
+  border-color: var(--energy-accent);
+  transform: translateY(-3px);
+}
+
+.energy-system-card > span {
+  color: var(--energy-highlight);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+
+.energy-system-card h3 {
+  margin: 19px 0 10px;
+  color: var(--energy-text);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.energy-system-card p {
+  max-width: 340px;
+  color: var(--energy-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.energy-project-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 30px 0;
+  border-top: 1px solid var(--energy-line);
+  color: #858779;
+}
+
+@media (max-width: 850px) {
+  .energy-systems-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .energy-project-page {
+    padding: 0 5%;
+  }
+
+  .energy-project-header {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px 0;
+  }
+
+  .energy-project-intro {
+    padding: 65px 0;
+  }
+
+  .energy-project-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .energy-systems-grid {
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+  }
+
+  .energy-section-heading h2 {
+    font-size: 24px;
+  }
+
+  .energy-project-footer {
+    flex-direction: column;
+  }
+}

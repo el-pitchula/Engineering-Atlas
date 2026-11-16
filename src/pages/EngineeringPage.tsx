@@ -24,6 +24,9 @@ function EngineeringPage() {
   const projectRoutes: Record<string, string> = {
     aerospace: '/engineering/aerospace/satellite',
     automotive: '/engineering/automotive/brakes',
+    energy: '/engineering/energy/turbine',
+    electronics: '/engineering/electronics/board',
+    software: '/engineering/software/architecture',
   }
 
   const projectRoute = projectRoutes[area.id]
