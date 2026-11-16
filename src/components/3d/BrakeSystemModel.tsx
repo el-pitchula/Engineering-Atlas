@@ -37,7 +37,8 @@ function Callout({
         position={[0, 0.34, 0]}
         center
         distanceFactor={8}
-        zIndexRange={[20, 0]}
+        zIndexRange={[100, 0]}
+        occlude={false}
       >
         <div
           onClick={(event) => {
@@ -48,16 +49,16 @@ function Callout({
             display: 'flex',
             alignItems: 'center',
             gap: '7px',
-            padding: active ? '7px 11px' : '6px 8px',
+            padding: active ? '7px 11px' : '6px 9px',
             background: active
-              ? 'rgba(239, 85, 85, 0.95)'
-              : 'rgba(22, 24, 28, 0.88)',
+              ? 'rgba(239, 85, 85, 0.96)'
+              : 'rgba(22, 24, 28, 0.94)',
             border: `1px solid ${active ? '#ff8585' : '#626871'}`,
-            borderRadius: '4px',
-            color: active ? '#ffffff' : '#c4c9d0',
+            borderRadius: '3px',
+            color: active ? '#ffffff' : '#d0d3d8',
             fontFamily: 'DM Mono, monospace',
             fontSize: '10px',
-            letterSpacing: '0.06em',
+            letterSpacing: '0.04em',
             whiteSpace: 'nowrap',
             cursor: 'pointer',
             boxShadow: active
@@ -76,9 +77,7 @@ function Callout({
             {number}
           </span>
 
-          {active && (
-            <span>{label}</span>
-          )}
+          <span>{label}</span>
         </div>
       </Html>
     </group>
@@ -152,6 +151,7 @@ export default function BrakeSystemModel({
   return (
     <group rotation={[0.12, -0.25, 0]}>
       {/* DISCO DE FREIO */}
+
       <group
         ref={discRef}
         onClick={(event) => {
@@ -204,15 +204,16 @@ export default function BrakeSystemModel({
         </mesh>
 
         <Callout
-          position={[0, 1.3, -0.1]}
+          position={[0, 1.55, 0.9]}
           number="01"
-          label="DISCO"
+          label="DISCO DE FREIO"
           active={selectedComponent === 'disc'}
           onSelect={() => onSelect('disc')}
         />
       </group>
 
       {/* PINÇA DE FREIO */}
+
       <group
         ref={caliperRef}
         onClick={(event) => {
@@ -247,13 +248,14 @@ export default function BrakeSystemModel({
         <Callout
           position={[0, 1.5, 0.5]}
           number="02"
-          label="PINÇA"
+          label="PINÇA DE FREIO"
           active={selectedComponent === 'caliper'}
           onSelect={() => onSelect('caliper')}
         />
       </group>
 
       {/* PASTILHAS */}
+
       <group
         ref={padsRef}
         onClick={(event) => {
@@ -287,13 +289,14 @@ export default function BrakeSystemModel({
         <Callout
           position={[0, 0.1, 0.7]}
           number="03"
-          label="PASTILHAS"
+          label="PASTILHAS DE FREIO"
           active={selectedComponent === 'pads'}
           onSelect={() => onSelect('pads')}
         />
       </group>
 
       {/* CUBO DE RODA */}
+
       <group
         ref={hubRef}
         onClick={(event) => {
@@ -341,15 +344,16 @@ export default function BrakeSystemModel({
         })}
 
         <Callout
-          position={[0.35, -0.65, 0]}
+          position={[0.45, -0.85, 0.8]}
           number="04"
-          label="CUBO"
+          label="CUBO DE RODA"
           active={selectedComponent === 'hub'}
           onSelect={() => onSelect('hub')}
         />
       </group>
 
       {/* RODA */}
+
       <group
         ref={wheelRef}
         onClick={(event) => {
@@ -397,7 +401,7 @@ export default function BrakeSystemModel({
         </mesh>
 
         <Callout
-          position={[0, 1.85, -0.4]}
+          position={[0, 2.05, 0.8]}
           number="05"
           label="RODA"
           active={selectedComponent === 'wheel'}

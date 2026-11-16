@@ -1,7 +1,8 @@
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stars } from '@react-three/drei'
+import { OrbitControls, Stars, Edges, Text } from '@react-three/drei'
+import * as THREE from 'three'
 import SatelliteModel from './SatelliteModel'
 
 const COLORS = {
@@ -37,7 +38,6 @@ const componentInfo: Record<
       'Mantém o alinhamento dos subsistemas.',
     ],
   },
-
   'solar-panels': {
     number: '02',
     title: 'Painéis solares',
@@ -50,7 +50,6 @@ const componentInfo: Record<
       'A energia pode ser armazenada em baterias.',
     ],
   },
-
   antenna: {
     number: '03',
     title: 'Antena de comunicação',
@@ -63,7 +62,6 @@ const componentInfo: Record<
       'Seu desempenho depende de frequência, ganho e orientação.',
     ],
   },
-
   battery: {
     number: '04',
     title: 'Bateria',
@@ -76,7 +74,6 @@ const componentInfo: Record<
       'Exige controle de carga, descarga e temperatura.',
     ],
   },
-
   computer: {
     number: '05',
     title: 'Computador de bordo',
@@ -89,7 +86,6 @@ const componentInfo: Record<
       'Coordena operações entre subsistemas.',
     ],
   },
-
   payload: {
     number: '06',
     title: 'Carga útil',
@@ -107,9 +103,7 @@ const componentInfo: Record<
 const componentGroups = [
   {
     name: 'Estrutura',
-    items: [
-      { id: 'structure', name: 'Estrutura primária', number: '01' },
-    ],
+    items: [{ id: 'structure', name: 'Estrutura primária', number: '01' }],
   },
   {
     name: 'Energia',
@@ -120,9 +114,7 @@ const componentGroups = [
   },
   {
     name: 'Comunicação',
-    items: [
-      { id: 'antenna', name: 'Antena', number: '03' },
-    ],
+    items: [{ id: 'antenna', name: 'Antena', number: '03' }],
   },
   {
     name: 'Controle e missão',
@@ -145,6 +137,201 @@ const buttonStyle = (active: boolean): React.CSSProperties => ({
   letterSpacing: '0.04em',
   transition: 'all 0.2s ease',
 })
+
+// =====================================================
+// REFERÊNCIAS TÉCNICAS
+// =====================================================
+
+interface ReferencePlaneProps {
+  title: string
+  subtitle: string
+  imagePath: string
+  position: [number, number, number]
+  rotation: [number, number, number]
+  width?: number
+  height?: number
+}
+
+function ReferencePlane({
+  title,
+  subtitle,
+  imagePath,
+  position,
+  rotation,
+  width = 3.4,
+  height = 2.55,
+}: ReferencePlaneProps) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null)
+
+  useEffect(() => {
+    let active = true
+    let loadedTexture: THREE.Texture | null = null
+
+    const loader = new THREE.TextureLoader()
+
+    loader.load(
+      imagePath,
+      (loaded) => {
+        if (!active) {
+          loaded.dispose()
+          return
+        }
+
+        loaded.colorSpace = THREE.SRGBColorSpace
+        loaded.anisotropy = 8
+
+        loadedTexture = loaded
+        setTexture(loaded)
+      },
+      undefined,
+      () => {
+        if (active) {
+          setTexture(null)
+        }
+      },
+    )
+
+    return () => {
+      active = false
+      loadedTexture?.dispose()
+    }
+  }, [imagePath])
+
+  return (
+    <group position={position} rotation={rotation}>
+      {/* SUPERFÍCIE ÚNICA DO PLANO */}
+
+      <mesh>
+        <planeGeometry args={[width, height]} />
+
+        <meshBasicMaterial
+          color={texture ? '#ffffff' : '#14243a'}
+          transparent={!texture}
+          opacity={texture ? 1 : 0.22}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+          polygonOffset
+          polygonOffsetFactor={1}
+        />
+
+        <Edges
+          color="#54718e"
+          threshold={15}
+          lineWidth={1}
+        />
+      </mesh>
+
+      {/* DESENHO TÉCNICO */}
+
+      {texture && (
+        <mesh position={[0, 0, 0.012]}>
+          <planeGeometry args={[width, height]} />
+
+          <meshBasicMaterial
+            map={texture}
+            side={THREE.DoubleSide}
+            toneMapped={false}
+            transparent={false}
+          />
+        </mesh>
+      )}
+
+      {/* IDENTIFICAÇÃO 3D — SEM CAIXAS HTML */}
+
+      {!texture && (
+        <group position={[0, 0, 0.025]}>
+          <Text
+            position={[0, 0.32, 0]}
+            fontSize={0.19}
+            color="#8bb9e8"
+            anchorX="center"
+            anchorY="middle"
+            textAlign="center"
+            maxWidth={width - 0.3}
+            letterSpacing={0.06}
+          >
+            {title}
+          </Text>
+
+          <Text
+            position={[0, -0.05, 0]}
+            fontSize={0.105}
+            color="#b0c1d4"
+            anchorX="center"
+            anchorY="middle"
+            textAlign="center"
+            maxWidth={width - 0.3}
+          >
+            {subtitle}
+          </Text>
+
+          <mesh position={[0, -0.42, 0]}>
+            <planeGeometry args={[1.65, 0.008]} />
+            <meshBasicMaterial color="#2b4059" />
+          </mesh>
+
+          <Text
+            position={[0, -0.58, 0]}
+            fontSize={0.085}
+            color="#71869e"
+            anchorX="center"
+            anchorY="middle"
+            textAlign="center"
+            maxWidth={width - 0.3}
+          >
+            AGUARDANDO ARQUIVO PNG
+          </Text>
+        </group>
+      )}
+    </group>
+  )
+}
+
+function SatelliteTechnicalReferences() {
+  return (
+    <group>
+      {/* 01 — VISTA FRONTAL */}
+
+      <ReferencePlane
+        title="01 / FRONT VIEW"
+        subtitle="PROJEÇÃO ORTOGRÁFICA FRONTAL"
+        imagePath="/projects/aerospace/front-view.png"
+        position={[0, 0, -3.6]}
+        rotation={[0, 0, 0]}
+        width={4.5}
+        height={3.0}
+      />
+
+      {/* 02 — VISTA LATERAL */}
+
+      <ReferencePlane
+        title="02 / SIDE VIEW"
+        subtitle="PROJEÇÃO ORTOGRÁFICA LATERAL"
+        imagePath="/projects/aerospace/side-view.png"
+        position={[-4.5, 0, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        width={4.5}
+        height={3.0}
+      />
+
+      {/* 03 — VISTA SUPERIOR */}
+
+      <ReferencePlane
+        title="03 / TOP VIEW"
+        subtitle="PROJEÇÃO ORTOGRÁFICA SUPERIOR"
+        imagePath="/projects/aerospace/top-view.png"
+        position={[0, -2.08, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        width={4.5}
+        height={3.0}
+      />
+    </group>
+  )
+}
+
+// =====================================================
+// VISUALIZADOR PRINCIPAL
+// =====================================================
 
 export default function SatelliteViewer() {
   const [selectedComponent, setSelectedComponent] = useState('structure')
@@ -234,7 +421,7 @@ export default function SatelliteViewer() {
             overflow: 'hidden',
           }}
         >
-          {/* Identificação da cena */}
+          {/* IDENTIFICAÇÃO DA CENA */}
 
           <div
             style={{
@@ -268,7 +455,7 @@ export default function SatelliteViewer() {
             </div>
           </div>
 
-          {/* Indicador de orientação */}
+          {/* INDICADOR DE ORIENTAÇÃO */}
 
           <div
             style={{
@@ -307,20 +494,15 @@ export default function SatelliteViewer() {
 
             <color attach="background" args={[COLORS.background]} />
 
-            <fog
-              attach="fog"
-              args={[COLORS.background, 13, 28]}
-            />
+            <fog attach="fog" args={[COLORS.background, 13, 28]} />
 
-            {/* ILUMINAÇÃO AMBIENTE */}
+            {/* ILUMINAÇÃO */}
 
             <ambientLight intensity={0.65} />
 
             <hemisphereLight
               args={['#d8e9ff', '#17263b', 1.15]}
             />
-
-            {/* LUZ PRINCIPAL */}
 
             <directionalLight
               position={[5, 8, 6]}
@@ -336,8 +518,6 @@ export default function SatelliteViewer() {
               shadow-bias={-0.0001}
             />
 
-            {/* LUZ DE PREENCHIMENTO AZUL */}
-
             <pointLight
               position={[-5, 1, -4]}
               intensity={1.6}
@@ -345,16 +525,12 @@ export default function SatelliteViewer() {
               distance={15}
             />
 
-            {/* LUZ DE CONTORNO */}
-
             <pointLight
               position={[3, -2, 5]}
               intensity={1.1}
               color="#8bb9e8"
               distance={12}
             />
-
-            {/* REFLEXO SUPERIOR */}
 
             <spotLight
               position={[0, 7, 2]}
@@ -378,6 +554,8 @@ export default function SatelliteViewer() {
                 selectedComponent={selectedComponent}
                 exploded={exploded}
               />
+
+              <SatelliteTechnicalReferences />
 
               <Stars
                 radius={70}
@@ -535,12 +713,7 @@ export default function SatelliteViewer() {
                     <span style={{ flex: 1 }}>{item.name}</span>
 
                     {active && (
-                      <span
-                        style={{
-                          color: COLORS.red,
-                          fontSize: '9px',
-                        }}
-                      >
+                      <span style={{ color: COLORS.red, fontSize: '9px' }}>
                         ●
                       </span>
                     )}
