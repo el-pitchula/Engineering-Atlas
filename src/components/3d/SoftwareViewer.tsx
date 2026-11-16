@@ -1,7 +1,7 @@
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import type { CSSProperties } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useLoader } from '@react-three/fiber'
 import {
   OrbitControls,
   Stars,
@@ -110,6 +110,11 @@ const componentGroups = [
   },
 ]
 
+/* =========================================================
+   REFERÊNCIAS TÉCNICAS
+   Carregamento integrado ao React Three Fiber com useLoader
+========================================================= */
+
 function ReferencePlane({
   title,
   subtitle,
@@ -127,109 +132,54 @@ function ReferencePlane({
   width?: number
   height?: number
 }) {
-  const [texture, setTexture] = useState<THREE.Texture | null>(null)
-  const [failed, setFailed] = useState(false)
+  const texture = useLoader(THREE.TextureLoader, imagePath)
 
-  useEffect(() => {
-    let active = true
-
-    const loader = new THREE.TextureLoader()
-
-    loader.load(
-      imagePath,
-      (loadedTexture) => {
-        if (!active) {
-          loadedTexture.dispose()
-          return
-        }
-
-        loadedTexture.colorSpace = THREE.SRGBColorSpace
-        loadedTexture.anisotropy = 8
-
-        setTexture(loadedTexture)
-        setFailed(false)
-      },
-      undefined,
-      () => {
-        if (active) {
-          setFailed(true)
-        }
-      },
-    )
-
-    return () => {
-      active = false
-      setTexture((currentTexture) => {
-        currentTexture?.dispose()
-        return null
-      })
-    }
-  }, [imagePath])
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.anisotropy = 8
+  texture.needsUpdate = true
 
   return (
     <group position={position} rotation={rotation}>
+      {/* Imagem técnica */}
+
       <mesh>
         <planeGeometry args={[width, height]} />
 
-        {texture ? (
-          <meshBasicMaterial
-            map={texture}
-            side={THREE.DoubleSide}
-            transparent
-          />
-        ) : (
-          <meshBasicMaterial
-            color={COLORS.surface}
-            side={THREE.DoubleSide}
-          />
-        )}
+        <meshBasicMaterial
+          map={texture}
+          side={THREE.DoubleSide}
+          toneMapped={false}
+          depthWrite={false}
+          transparent={false}
+        />
 
-        <Edges color={COLORS.blue} />
+        <Edges
+          color={COLORS.blue}
+          threshold={15}
+        />
       </mesh>
 
-      {!texture && (
-        <group>
-          <Text
-            position={[0, 0.25, 0.015]}
-            fontSize={0.15}
-            color={COLORS.blue}
-            anchorX="center"
-            anchorY="middle"
-          >
-            {title}
-          </Text>
+      {/* Identificação da referência */}
 
-          <Text
-            position={[0, -0.05, 0.015]}
-            fontSize={0.105}
-            color={COLORS.text}
-            anchorX="center"
-            anchorY="middle"
-          >
-            {failed ? 'DESENHO TÉCNICO NÃO DISPONÍVEL' : 'CARREGANDO REFERÊNCIA'}
-          </Text>
+      <Text
+        position={[-width / 2 + 0.12, height / 2 + 0.17, 0.025]}
+        fontSize={0.13}
+        color={COLORS.blue}
+        anchorX="left"
+        anchorY="middle"
+      >
+        {title}
+      </Text>
 
-          <Text
-            position={[0, -0.35, 0.015]}
-            fontSize={0.09}
-            color={COLORS.muted}
-            anchorX="center"
-            anchorY="middle"
-          >
-            {subtitle}
-          </Text>
-
-          <Text
-            position={[0, -0.85, 0.015]}
-            fontSize={0.075}
-            color={COLORS.muted}
-            anchorX="center"
-            anchorY="middle"
-          >
-            ENGINEERING ATLAS / SOFTWARE
-          </Text>
-        </group>
-      )}
+      <Text
+        position={[0, -height / 2 - 0.17, 0.025]}
+        fontSize={0.09}
+        color={COLORS.muted}
+        anchorX="center"
+        anchorY="middle"
+      >
+        {subtitle}
+      </Text>
     </group>
   )
 }
@@ -243,7 +193,7 @@ function SoftwareTechnicalReferences() {
         title="01 / FRONT VIEW"
         subtitle="PROJEÇÃO ORTOGRÁFICA FRONTAL"
         imagePath="/projects/software/front-view.png"
-        position={[0, 0, -4.0]}
+        position={[0, 0, -5.2]}
         rotation={[0, 0, 0]}
         width={4.5}
         height={3.0}
@@ -255,7 +205,7 @@ function SoftwareTechnicalReferences() {
         title="02 / SIDE VIEW"
         subtitle="PROJEÇÃO ORTOGRÁFICA LATERAL"
         imagePath="/projects/software/side-view.png"
-        position={[-4.8, 0, 0]}
+        position={[-5.2, 0, 0]}
         rotation={[0, Math.PI / 2, 0]}
         width={4.5}
         height={3.0}
@@ -276,6 +226,10 @@ function SoftwareTechnicalReferences() {
   )
 }
 
+/* =========================================================
+   ESTILOS
+========================================================= */
+
 const panelStyle: CSSProperties = {
   background: 'rgba(17, 22, 36, 0.96)',
   border: `1px solid ${COLORS.line}`,
@@ -287,6 +241,10 @@ const monoStyle: CSSProperties = {
   fontFamily: 'DM Mono, monospace',
   letterSpacing: '0.08em',
 }
+
+/* =========================================================
+   VISUALIZADOR PRINCIPAL
+========================================================= */
 
 export default function SoftwareViewer() {
   const [selectedComponent, setSelectedComponent] = useState('enclosure')
@@ -419,11 +377,15 @@ export default function SoftwareViewer() {
               color="#c4a5ef"
             />
 
+            {/* MODELO PRINCIPAL */}
+
             <SoftwareModel
               onSelect={setSelectedComponent}
               selectedComponent={selectedComponent}
               exploded={exploded}
             />
+
+            {/* REFERÊNCIAS INDEPENDENTES DO MODELO */}
 
             <SoftwareTechnicalReferences />
 
@@ -438,7 +400,7 @@ export default function SoftwareViewer() {
             enableDamping
             dampingFactor={0.06}
             minDistance={5}
-            maxDistance={19}
+            maxDistance={22}
             maxPolarAngle={Math.PI / 2.02}
             target={[0, 0.1, 0]}
           />
